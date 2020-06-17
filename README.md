@@ -18,5 +18,9 @@ var config = {
     ]
 }
 ```
+If you want to change the graphics you can download any icon and save in img folder, then change ledOn and off names in start function
+ 
+work may need to be done on the image size and also the CSS for padding and DIV container size to align it.
 
+Will look at cleaning up the code and making it more user friendly at some time
 
