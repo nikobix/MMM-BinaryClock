@@ -42,7 +42,6 @@ Module.register("MMM-BinaryClock", {
 		this.loaded = false;
 
 		// Schedule update timer.
-		//this.getData();
 		setInterval(function() {
 			self.getBinTime();
 			self.updateDom();
@@ -165,17 +164,5 @@ Module.register("MMM-BinaryClock", {
 			en: "translations/en.json",
 			es: "translations/es.json"
 		};
-	},
-
-
-	processData: function(data) {
-		var self = this;
-		this.dataRequest = data;
-		if (this.loaded === false) { self.updateDom(self.config.animationSpeed) ; }
-		this.loaded = true;
-
-		// the data if load
-		// send notification to helper
-		this.sendSocketNotification("MMM-BinaryClock-NOTIFICATION_TEST", data);
 	}
 });
