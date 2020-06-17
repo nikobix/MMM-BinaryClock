@@ -2,7 +2,7 @@
 
 This is a module for the [MagicMirror²](https://github.com/MichMich/MagicMirror/).
 
-Todo: Create a simple Binary clock
+Todo: Clean up css, make more user friendly, option for different dot images
 
 ![GitHub Logo](/img/Binary_Clock_screenshot.jpg)
 
