@@ -1,0 +1,23 @@
+/*
+ *
+ * MMM-BinaryClock
+ *
+ * upgrade_script
+ * MIT Licensed.
+ *
+ * Custom here your css module
+ *
+ */
+
+img {
+
+padding-left: 10px;
+padding-bottom: 2px;
+}
+
+#binary_clock {
+height: 140px;
+width:220px;
+margin-left: 75px;
+}
+
