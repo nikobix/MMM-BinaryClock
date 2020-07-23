@@ -2,7 +2,8 @@
 
 This is a module for the [MagicMirror²](https://github.com/MichMich/MagicMirror/).
 
-Todo: Clean up css, make more user friendly, option for different dot images
+Re-written the module to remove the DOM rebuild every second. DOM is now built once and the images are blocked/unblocked.
+Removed the H-M-S as I just could not get them to align correctly when size changes.
 
 ![GitHub Logo](/img/Binary_Clock_screenshot.jpg)
 
@@ -15,7 +16,9 @@ var config = {
         {
             module: 'MMM-BinaryClock',
             position:"top_left",
-
+            config: {
+                size: 30
+                }
         }
     ]
 }
