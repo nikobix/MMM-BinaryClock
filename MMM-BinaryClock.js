@@ -11,7 +11,7 @@ Module.register("MMM-BinaryClock", {
 	defaults: {
 		updateInterval: 1000,  // set to one second for testing
 		retryDelay: 5000,
-
+		size: 35,
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
@@ -40,11 +40,12 @@ Module.register("MMM-BinaryClock", {
 		
 		//Flag for check if module is loaded
 		this.loaded = false;
+		this.running = false;
+		
 
 		// Schedule update timer.
 		setInterval(function() {
-			self.getBinTime();
-			self.updateDom();
+			self.updateBinTime();
 		}, this.config.updateInterval);
 	},
 
@@ -55,16 +56,6 @@ Module.register("MMM-BinaryClock", {
 	 * argument delay number - Milliseconds before next update.
 	 *  If empty, this.config.updateInterval is used.
 	 */
-	scheduleUpdate: function(delay) {
-		var nextLoad = this.config.updateInterval;
-		if (typeof delay !== "undefined" && delay >= 0) {
-			nextLoad = delay;
-		}
-		nextLoad = nextLoad ;
-		var self = this;
-		setTimeout(function() {
-		}, nextLoad);
-	},
 	
 	// calculate time in binary as a string
 	
@@ -78,84 +69,92 @@ Module.register("MMM-BinaryClock", {
 		this.binSecs = seconds.toString(2).padStart(6,"0");
 
 	},
+	
+	// Update time and refresh DOM
+	
+	updateBinTime: function(){
+		this.getBinTime();
+		var h = this.binHours;
+		var m = this.binMins;
+		var s = this.binSecs;
+		
+		var binH = h.split("");
+		var binM = m.split("");
+		var binS = s.split("");
+		// Loop hour min and secs
+			for(var a = 0; a < 3 ; a++){
+		// loop for each string element
+				for(var j = 5; j>-1 ; j--){
+					// check which compnent H M S
+					switch (a) {
+						case 0: //hours
+							var img = document.getElementById(`Ho${j}`);
+							//console.log(img);
+							binH[j]==1 ? img.style.display = "block" : img.style.display = "none";
+						break;
+						case 1: //mins
+							var img = document.getElementById(`Mo${j}`);
+							//console.log(img);
+							binM[j]==1 ? img.style.display = "block" : img.style.display = "none";
+						break;					
+						case 2: //sec
+							var img = document.getElementById(`So${j}`);
+							//console.log(img);
+							binS[j]==1 ? img.style.display = "block" : img.style.display = "none";
+						break;	
+					};					
+
+				}	
+			}
+	},
+	
+	
 		/* build dom
 		 */
 	getDom: function() {
-		var self = this;
 		var LEDoff = this.LEDoff;
 		var LEDon = this.LEDon;
-		var binHours = this.binHours;
-		var binMins = this.binMins;
-		var binSecs = this.binSecs;
-		
-		
-		// create element wrapper for show into the module
 		var wrapper = document.createElement("div");
 		wrapper.id = 'binary_clock';
-		if(binHours) {   		// split binary time into string array
-			var binH = binHours.split("");
-			var binM = binMins.split("");
-			var binS = binSecs.split("");
-		// Loop hour min and secs
-			for(var a = 0; a < 3 ; a++){
-				var x = 0;
-		// X for correct order
-
-		// loop for each string element
-				for(var j = 5; j>-1 ; j--){
-					led = document.createElement("img");
-					// check which compnent H M S
-					switch (a) {
-						case 0:
-							led.id=`hours hours_${x}`;
-							bin = binH;
-						break;
-						case 1:
-							led.id=`mins mins_${x}`;
-							bin = binM;
-						break;					
-						case 2:
-							led.id=`secs secs_${x}`;
-							bin = binS;
-						break;	
-					};					
-					// if 1 switch on or 0 switch off
-					bin[x]=="1" ? this.ledOn(led) : this.ledOff(led);
-					wrapper.appendChild(led);
-					x++;
-				}	
-				// add text for HMS
-				switch (a){
-					case 0:
-						text = document.createTextNode(" H");
-						break;
-					case 1:
-						text = document.createTextNode(" M");
-						break;
-					case 2:
-						text = document.createTextNode(" S");
-						break;
-					}
-				text.id="text";
-				wrapper.appendChild(text);
-			}		
+		console.log("build DOM");
+		var s= this.config.size;
+		//loop to build DOM first load
+		for(y = 0; y<3 ; y++){
+			switch(y) {
+				case 0:
+					timeIndicator = "H";
+					break;
+				case 1:
+					timeIndicator = "M";
+					break;
+				case 2:
+					timeIndicator = "S";
+					break;
+				}
+			for(var x = 0 ; x < 6 ; x++){
+				var div = document.createElement("div");
+				for(var z=0 ; z<2 ; z++){
+					var a = document.createElement('a');
+					var img = document.createElement("img");
+					z==0 ? img.src=this.file(this.LEDoff) : img.src=this.file(this.LEDon);
+					z==0 ? img.id = timeIndicator+"x"+x : img.id = timeIndicator+"o"+x;
+					img.style.position = "absolute";
+					img.style.left = x*(s+(s/10))+"px";
+					img.style.top = y*(s+(s/5))+"px";
+					img.width = s;
+					if(z==1){img.style.display = "none"}
+					a.appendChild(img);
+					div.appendChild(a);	
+				}
+				wrapper.appendChild(div);		
+			}
+	
 		}
+		this.running = true;
 		return wrapper;
 	},
- // function to format the LED on and off
-	ledOn: function(led){
-		led.src=this.file(this.LEDon);
-		led.alt="on";
-		led.style='width: 20px';
-		return led;
-	},
-	ledOff: function(led){
-		led.src=this.file(this.LEDoff);
-		led.alt="off";
-		led.style='width: 20px';
-		return led;
-	},		
-		
+	
+	
 
 	// Load translations files
 	getTranslations: function() {
