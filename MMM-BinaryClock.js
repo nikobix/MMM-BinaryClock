@@ -116,8 +116,12 @@ Module.register("MMM-BinaryClock", {
 		var LEDon = this.LEDon;
 		var wrapper = document.createElement("div");
 		wrapper.id = 'binary_clock';
-		console.log("build DOM");
+		var container = document.createElement("div");
+		container.id = 'container';
 		var s= this.config.size;
+		container.style.height = (s*3.5)+"px";
+		container.style.width = (s*6.5)+"px";
+		//console.log("build DOM");
 		//loop to build DOM first load
 		for(y = 0; y<3 ; y++){
 			switch(y) {
@@ -138,7 +142,7 @@ Module.register("MMM-BinaryClock", {
 					var img = document.createElement("img");
 					z==0 ? img.src=this.file(this.LEDoff) : img.src=this.file(this.LEDon);
 					z==0 ? img.id = timeIndicator+"x"+x : img.id = timeIndicator+"o"+x;
-					img.style.position = "absolute";
+					img.style.position = "relative";
 					img.style.left = x*(s+(s/10))+"px";
 					img.style.top = y*(s+(s/5))+"px";
 					img.width = s;
@@ -146,11 +150,13 @@ Module.register("MMM-BinaryClock", {
 					a.appendChild(img);
 					div.appendChild(a);	
 				}
-				wrapper.appendChild(div);		
+				container.appendChild(div);		
 			}
 	
 		}
 		this.running = true;
+		
+		wrapper.appendChild(container);
 		return wrapper;
 	},
 	
